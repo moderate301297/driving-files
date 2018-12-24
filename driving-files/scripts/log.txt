@@ -1,0 +1,17 @@
+[36m2018-12-20 13:16:37.534 UTC [msp] GetLocalMSP -> DEBU 001[0m Returning existing local MSP
+[36m2018-12-20 13:16:37.534 UTC [msp] GetDefaultSigningIdentity -> DEBU 002[0m Obtaining default signing identity
+2018-12-20 13:16:37.538 UTC [channelCmd] InitCmdFactory -> INFO 003[0m Endorser and orderer connections initialized
+[36m2018-12-20 13:16:37.539 UTC [msp] GetLocalMSP -> DEBU 004[0m Returning existing local MSP
+[36m2018-12-20 13:16:37.539 UTC [msp] GetDefaultSigningIdentity -> DEBU 005[0m Obtaining default signing identity
+[36m2018-12-20 13:16:37.539 UTC [msp] GetLocalMSP -> DEBU 006[0m Returning existing local MSP
+[36m2018-12-20 13:16:37.539 UTC [msp] GetDefaultSigningIdentity -> DEBU 007[0m Obtaining default signing identity
+[36m2018-12-20 13:16:37.539 UTC [msp/identity] Sign -> DEBU 008[0m Sign: plaintext: 0AF1050A074F7267324D535012E5052D...2A0641646D696E732A0641646D696E73 
+[36m2018-12-20 13:16:37.539 UTC [msp/identity] Sign -> DEBU 009[0m Sign: digest: F13ADD46589F78ACF8C130EF00EA890FA4492A6A24AEC85957D575663A6135F5 
+[36m2018-12-20 13:16:37.539 UTC [msp] GetLocalMSP -> DEBU 00a[0m Returning existing local MSP
+[36m2018-12-20 13:16:37.539 UTC [msp] GetDefaultSigningIdentity -> DEBU 00b[0m Obtaining default signing identity
+[36m2018-12-20 13:16:37.540 UTC [msp] GetLocalMSP -> DEBU 00c[0m Returning existing local MSP
+[36m2018-12-20 13:16:37.540 UTC [msp] GetDefaultSigningIdentity -> DEBU 00d[0m Obtaining default signing identity
+[36m2018-12-20 13:16:37.540 UTC [msp/identity] Sign -> DEBU 00e[0m Sign: plaintext: 0AA8060A1508021A0608B5ACEEE00522...2BBF6DD4CBB9E0E1888D9EE970F7DC9B 
+[36m2018-12-20 13:16:37.540 UTC [msp/identity] Sign -> DEBU 00f[0m Sign: digest: 1B90E7F9C3C760281E61CC8EDF0DD52C5913C343060D8999CE67CDA636955A4E 
+2018-12-20 13:16:37.578 UTC [channelCmd] update -> INFO 010[0m Successfully submitted channel update
+2018-12-20 13:16:37.578 UTC [main] main -> INFO 011[0m Exiting.....
