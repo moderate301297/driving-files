@@ -42,8 +42,8 @@ Organizations:
 Orderer: &OrderersDefaults
     OrdererType: kafka
     Addresses:
-        - orderer0-orgorderer.orgorderer:7050
-        - orderer1-orgorderer.orgorderer:7050
+        - orderer0.orgorderer:7050
+        - orderer1.orgorderer:7050
     BatchTimeout: 2s
     BatchSize:
         MaxMessageCount: 1000

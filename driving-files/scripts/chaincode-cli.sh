@@ -13,8 +13,7 @@ ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrga
 
 echo "Channel name : "$CHANNEL_NAME
 
-CC_SRC_PATH1="github.com/hyperledger/fabric/peer/chaincode/go01/chaincode_result"
-CC_SRC_PATH2="github.com/hyperledger/fabric/peer/chaincode/go01/chaincode_certificate"
+CC_SRC_PATH="github.com/hyperledger/fabric/peer/chaincode/chaincode_example02/"
 
 
 ORDERER0_IP=orderer0.orgorderer
@@ -61,13 +60,10 @@ installChaincode () {
 	setGlobals $PEER $ORG
 	VERSION=$3
         set -x
-	peer chaincode install -n $CHAINCODE_NAME1 -v ${VERSION} -l ${LANGUAGE} -p ${CC_SRC_PATH1} >&log1.txt
-	peer chaincode install -n $CHAINCODE_NAME2 -v ${VERSION} -l ${LANGUAGE} -p ${CC_SRC_PATH2} >&log2.txt
-    
-    res=$?
+	peer chaincode install -n $CHAINCODE_NAME -v ${VERSION} -l ${LANGUAGE} -p ${CC_SRC_PATH} >&log.txt
+	res=$?
         set +x
-	cat log1.txt
-    cat log2.txt
+	cat log.txt
 	verifyResult $res "Chaincode installation on peer${PEER}.org${ORG} has Failed"
 	echo "===================== Chaincode is installed on peer${PEER}.org${ORG} ===================== "
 	echo
@@ -90,19 +86,16 @@ instantiateChaincode () {
 	# lets supply it directly as we know it using the "-o" option
 	if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
                 set -x
-		peer chaincode instantiate -o $ORDERER -C $CHANNEL_NAME -n $CHAINCODE_NAME1 -l ${LANGUAGE} -v ${VERSION} -c '{"Args":["init"]}' -P "OR	('Org1MSP.member','Org2MSP.member')" >&log1.txt
-        peer chaincode instantiate -o $ORDERER -C $CHANNEL_NAME -n $CHAINCODE_NAME2 -l ${LANGUAGE} -v ${VERSION} -c '{"Args":["init"]}' -P "OR	('Org1MSP.member','Org2MSP.member')" >&log2.txt
+		peer chaincode instantiate -o $ORDERER -C $CHANNEL_NAME -n $CHAINCODE_NAME -l ${LANGUAGE} -v ${VERSION} -c '{"Args":["init","a","100","b","200"]}' -P "OR	('Org1MSP.member','Org2MSP.member')" >&log.txt
 		res=$?
                 set +x
 	else
                 set -x
-		peer chaincode instantiate -o $ORDERER --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n $CHAINCODE_NAME1 -l ${LANGUAGE} -v ${VERSION} -c '{"Args":["init"]}' -P "OR	('Org1MSP.member','Org2MSP.member')" >&log1.txt
-        peer chaincode instantiate -o $ORDERER --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n $CHAINCODE_NAME2 -l ${LANGUAGE} -v ${VERSION} -c '{"Args":["init"]}' -P "OR	('Org1MSP.member','Org2MSP.member')" >&log2.txt
+		peer chaincode instantiate -o $ORDERER --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n $CHAINCODE_NAME -l ${LANGUAGE} -v 1.0 -c '{"Args":["init","a","100","b","200"]}' -P "OR	('Org1MSP.member','Org2MSP.member')" >&log.txt
 		res=$?
                 set +x
 	fi
-	cat log1.txt
-    cat log2.txt
+	cat log.txt
 	verifyResult $res "Chaincode instantiation on peer${PEER}.org${ORG} on channel '$CHANNEL_NAME' failed"
 	echo "===================== Chaincode Instantiation on peer${PEER}.org${ORG} on channel '$CHANNEL_NAME' ===================== "
 	echo
@@ -123,9 +116,9 @@ upgradeChaincode () {
     fi
 
 	if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
-		peer chaincode upgrade -o $ORDERER -C $CHANNEL_NAME -n $CHAINCODE_NAME -v $VERSION  -l ${LANGUAGE} -p ${CC_SRC_PATH} -c  '{"Args":["init"]}' -P "OR	('Org1MSP.member','Org2MSP.member')" >&log.txt
+		peer chaincode upgrade -o $ORDERER -C $CHANNEL_NAME -n $CHAINCODE_NAME -v $VERSION  -l ${LANGUAGE} -p ${CC_SRC_PATH} -c  '{"Args":["init","a","100","b","200"]}' -P "OR	('Org1MSP.member','Org2MSP.member')" >&log.txt
     else
-		peer chaincode upgrade -o $ORDERER --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n $CHAINCODE_NAME -v $VERSION  -l ${LANGUAGE} -p ${CC_SRC_PATH} -c '{"Args":["init"]}' -P "OR	('Org1MSP.member','Org2MSP.member')"  >&log.txt
+		peer chaincode upgrade -o $ORDERER --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n $CHAINCODE_NAME -v $VERSION  -l ${LANGUAGE} -p ${CC_SRC_PATH} -c '{"Args":["init","a","100","b","200"]}' -P "OR	('Org1MSP.member','Org2MSP.member')"  >&log.txt
 	fi
 	res=$?
 	cat log.txt
@@ -149,18 +142,15 @@ chaincodeInvoke () {
     fi
 
 	if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
-		peer chaincode invoke -o $ORDERER -C $CHANNEL_NAME -n $CHAINCODE_NAME1 -c "'$CONSTRUCTOR'"  >&log.txt
-        echo "peer chaincode invoke -o" $ORDERER "-C" $CHANNEL_NAME "-n" $CHAINCODE_NAME1 "-c" "'$CONSTRUCTOR'"
+		peer chaincode invoke -o $ORDERER -C $CHANNEL_NAME -n $CHAINCODE_NAME -c $CONSTRUCTOR  >&log.txt
 	else
-		peer chaincode invoke -o $ORDERER  --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n $CHAINCODE_NAME1 -c $CONSTRUCTOR >&log.txt
-        echo "peer chaincode invoke -o" $ORDERER  "--tls" $CORE_PEER_TLS_ENABLED "--cafile" $ORDERER_CA "-C" $CHANNEL_NAME "-n" $CHAINCODE_NAME1 "-c" $CONSTRUCTOR
+		peer chaincode invoke -o $ORDERER  --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n $CHAINCODE_NAME -c $CONSTRUCTOR >&log.txt
 	fi
 	res=$?
 	cat log.txt
 	verifyResult $res "Invoke execution on PEER$PEER failed "
 	echo "===================== Invoke transaction on PEER$PEER on channel '$CHANNEL_NAME' ===================== "
 	echo
-    echo "End time: " $DATE_WITH_TIME
 }
 
 chaincodeQuery () {
@@ -170,24 +160,44 @@ chaincodeQuery () {
 
     echo "===================== Querying on PEER$PEER on channel '$CHANNEL_NAME'... ===================== "
 
-    peer chaincode query -C $CHANNEL_NAME -n $CHAINCODE_NAME1 -c $CONSTRUCTOR >&log.txt
+    peer chaincode query -C $CHANNEL_NAME -n $CHAINCODE_NAME -c $CONSTRUCTOR >&log.txt
     echo
     cat log.txt
 }
 
 
 
-CHAINCODE_NAME1=mycc1
-CHAINCODE_NAME2=mycc2
+CHAINCODE_NAME=mycc
+VERSION=1.0
 
-VERSION=0.1
+installChaincode 0 1 $VERSION
 
-#installChaincode 0 1 $VERSION
-
-#installChaincode 0 2 $VERSION
+installChaincode 0 2 $VERSION
 
 instantiateChaincode 0 1 $VERSION
 
 sleep 3
+
+CONSTRUCTOR='{"Args":["query","a"]}'
+chaincodeQuery 0 1
+sleep 3
+
+CONSTRUCTOR='{"Args":["invoke","a","b","10"]}'
+chaincodeInvoke 0 1
+sleep 3
+
+CONSTRUCTOR='{"Args":["query","a"]}'
+chaincodeQuery 0 1
+
+exit 0
+
+#upgradeChaincode 0 1 $VERSION
+
+#CONSTRUCTOR='{"Args":["query","a"]}'
+#chaincodeQuery 0 1
+sleep 3
+
+#CONSTRUCTOR='{"Args":["invoke","a","b","10"]}'
+#chaincodeInvoke 0 1
 
 

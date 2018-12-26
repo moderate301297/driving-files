@@ -6,7 +6,7 @@ echo " ==========initialize mychannel========== "
 echo " ============================================== "
 echo
 
-source header.sh
+source scripts/header.sh
 
 CHANNEL_NAME="$1"
 : ${CHANNEL_NAME:="mychannel"}
@@ -80,9 +80,9 @@ createChannel() {
 
 
     if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
-    		peer channel create -o $ORDERER -c $CHANNEL_NAME -f ../channel-artifacts/channel.tx -t $TIMEOUT >&log.txt
+    		peer channel create -o $ORDERER -c $CHANNEL_NAME -f ./channel-artifacts/channel.tx -t $TIMEOUT >&log.txt
     	else
-    		peer channel create -o $ORDERER -c $CHANNEL_NAME -f ../channel-artifacts/channel.tx --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -t $TIMEOUT >&log.txt
+    		peer channel create -o $ORDERER -c $CHANNEL_NAME -f ./channel-artifacts/channel.tx --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -t $TIMEOUT >&log.txt
     	fi
 	res=$?
 	cat log.txt
@@ -104,9 +104,9 @@ updateAnchorPeers() {
     fi
 
     if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
-		peer channel update -o $ORDERER -c $CHANNEL_NAME -f ../channel-artifacts/${CORE_PEER_LOCALMSPID}anchors.tx >&log.txt
+		peer channel update -o $ORDERER -c $CHANNEL_NAME -f ./channel-artifacts/${CORE_PEER_LOCALMSPID}anchors.tx >&log.txt
 	else
-		peer channel update -o $ORDERER -c $CHANNEL_NAME -f ../channel-artifacts/${CORE_PEER_LOCALMSPID}anchors.tx --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA >&log.txt
+		peer channel update -o $ORDERER -c $CHANNEL_NAME -f ./channel-artifacts/${CORE_PEER_LOCALMSPID}anchors.tx --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA >&log.txt
 	fi
 	res=$?
 	cat log.txt
@@ -155,9 +155,6 @@ joinChannel () {
 echo_b "Creating channel..."
 createChannel 0 1
 sleep 3
-
-#createChannel 0 2
-#sleep 1
 
 ## Join all the peers to the channel
 echo_b "Having all peers join the channel..."
